@@ -1,0 +1,41 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ngCustomElement Example</title>
+</head>
+
+<body ng-app="app">
+    <script src="../node_modules/angular/angular.js"></script>
+    <script src="../dist/ng-custom-element.umd.js"></script>
+
+    <script>
+        var app = angular.module('app', ['ngCustomElement']).controller('ExampleController', function () {
+            this.prop1 = {
+                somObj: 'val',
+            };
+
+            this.prop2 = ['val2'];
+
+            this.onClick = function clickHandler($event) {
+                console.log('was clicked', $event)
+            };
+
+            this.show = true;
+            this.toggle = () => {
+                this.show = !this.show;
+            };
+        });
+    </script>
+
+    <div ng-controller="ExampleController as example">
+        <button ng-click="example.toggle()">Show/hide</button>
+
+        <p ng-custom-element ng-if="example.show" ngce-prop-prop1="example.prop1" ngce-prop-prop2="example.prop2"
+            ngce-on-click="example.onClick($event)">hiii</p>
+    </div>
+</body>
+
+</html>
