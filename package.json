@@ -1,0 +1,36 @@
+{
+  "name": "ng-custom-element",
+  "version": "1.0.0",
+  "repository": "git@github.com:JamesHenry/ng-custom-element.git",
+  "author": "James Henry <james@henry.sc>",
+  "license": "MIT",
+  "scripts": {
+    "build": "microbundle --entry src/index.ts",
+    "dev": "microbundle watch --entry src/index.ts",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@types/jest": "^23.3.1",
+    "angular": "~1.3.20",
+    "angular-mocks": "~1.3.20",
+    "jest": "^23.5.0",
+    "microbundle": "https://github.com/developit/microbundle#3d4d09f692d6f1b5b34eb2738d30659c943b2022",
+    "prettier": "^1.14.2",
+    "ts-jest": "^23.1.4",
+    "typescript": "^3.0.3"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
+  }
+}
