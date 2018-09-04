@@ -20,8 +20,12 @@ export const directiveFactory = [
         _c: any,
         $transclude: any
       ) => {
+
+        let transcludedElement: any;
+
         $transclude((clone: any) => {
-          const transcludedElement = clone[1];
+          console.log('run transclude')
+          transcludedElement = clone[1];
 
           if ($scope.props) {
             Object.keys($scope.props).forEach(propName => {
@@ -40,6 +44,19 @@ export const directiveFactory = [
 
           $element.empty();
           $element.append(clone);
+        });
+
+        $scope.$on("$destroy", function() {
+          console.log("destroy");
+
+          if (transcludedElement && $scope.events) {
+            Object.keys($scope.events).forEach(eventName => {
+              transcludedElement.removeEventListener(
+                eventName,
+                $scope.events[eventName]
+              );
+            });
+          }
         });
       }
     };

@@ -25,13 +25,20 @@
                 click: function clickHandler() {
                     console.log('was clicked')
                 }
-            }
+            };
+            
+            this.show = true;
+            this.toggle = () => {
+                this.show = !this.show;
+            };
         });
     </script>
 
     <div ng-controller="ExampleController as example">
 
-        <ng-custom-element props="example.somePropConfig" events="example.someEventConfig">
+        <button ng-click="example.toggle()">Show/hide</button>
+
+        <ng-custom-element ng-if="example.show" props="example.somePropConfig" events="example.someEventConfig">
             <p>inner</p>
         </ng-custom-element>
 
