@@ -20,11 +20,23 @@ export const directiveFactory = [
         _c: any,
         $transclude: any
       ) => {
-
         let transcludedElement: any;
 
+        $scope.$watch(
+          () => $scope.props,
+          () => {
+            console.log('prop watch', $scope.props)
+            if (transcludedElement && $scope.props) {
+              Object.keys($scope.props).forEach(propName => {
+                transcludedElement[propName] = $scope.props[propName];
+              });
+            }
+          },
+          true
+        );
+
         $transclude((clone: any) => {
-          console.log('run transclude')
+          console.log("run transclude");
           transcludedElement = clone[1];
 
           if ($scope.props) {
