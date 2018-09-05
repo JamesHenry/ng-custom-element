@@ -26,7 +26,7 @@
                     console.log('was clicked')
                 }
             };
-            
+
             this.show = true;
             this.toggle = () => {
                 this.show = !this.show;
@@ -38,9 +38,7 @@
 
         <button ng-click="example.toggle()">Show/hide</button>
 
-        <ng-custom-element ng-if="example.show" props="example.somePropConfig" events="example.someEventConfig">
-            <p>inner</p>
-        </ng-custom-element>
+        <p ng-custom-element ng-if="example.show" props="example.somePropConfig" events="example.someEventConfig">hiii</p>
 
     </div>
 

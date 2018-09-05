@@ -3,74 +3,67 @@ export const directiveSelector = "ngCustomElement";
 export const directiveFactory = [
   function directiveFactory() {
     return {
-      restrict: "E",
-      transclude: true,
-      replace: false,
+      restrict: "A",
       scope: {
         props: "=",
         events: "="
       },
-      template: `
-        <div ng-transclude></div>
-      `,
-      link: (
-        $scope: any,
-        $element: any,
-        _a: any,
-        _c: any,
-        $transclude: any
-      ) => {
-        let transcludedElement: any;
-
+      link: ($scope: any, $element: any) => {
+        /**
+         * Apply the initial values for `props` and `events`
+         */
+        const customElement = $element[0];
+        applyProps(customElement, $scope.props);
+        addEventListeners(customElement, $scope.events);
+        /**
+         * Watch for changes to the `props` mapping
+         */
         $scope.$watch(
           () => $scope.props,
           () => {
-            console.log('prop watch', $scope.props)
-            if (transcludedElement && $scope.props) {
-              Object.keys($scope.props).forEach(propName => {
-                transcludedElement[propName] = $scope.props[propName];
-              });
-            }
+            console.log("prop watch", $scope.props);
+            applyProps(customElement, $scope.props);
           },
           true
         );
-
-        $transclude((clone: any) => {
-          console.log("run transclude");
-          transcludedElement = clone[1];
-
-          if ($scope.props) {
-            Object.keys($scope.props).forEach(propName => {
-              transcludedElement[propName] = $scope.props[propName];
-            });
-          }
-
-          if ($scope.events) {
-            Object.keys($scope.events).forEach(eventName => {
-              transcludedElement.addEventListener(
-                eventName,
-                $scope.events[eventName]
-              );
-            });
-          }
-
-          $element.empty();
-          $element.append(clone);
-        });
-
-        $scope.$on("$destroy", function() {
+        /**
+         * Clean up the event listeners when the element is destroyed
+         */
+        $element.on("$destroy", function() {
           console.log("destroy");
-
-          if (transcludedElement && $scope.events) {
-            Object.keys($scope.events).forEach(eventName => {
-              transcludedElement.removeEventListener(
-                eventName,
-                $scope.events[eventName]
-              );
-            });
-          }
+          removeEventListeners(customElement, $scope.events);
         });
       }
     };
   }
 ];
+
+function applyProps(el: HTMLElement, props: { [key: string]: any }) {
+  if (props) {
+    Object.keys(props).forEach(propName => {
+      (el as any)[propName] = props[propName];
+    });
+  }
+}
+
+function addEventListeners(
+  el: HTMLElement,
+  events: { [key: string]: EventListenerOrEventListenerObject }
+) {
+  if (events) {
+    Object.keys(events).forEach(eventName => {
+      el.addEventListener(eventName, events[eventName]);
+    });
+  }
+}
+
+function removeEventListeners(
+  el: HTMLElement,
+  events: { [key: string]: EventListenerOrEventListenerObject }
+) {
+  if (events) {
+    Object.keys(events).forEach(eventName => {
+      el.removeEventListener(eventName, events[eventName]);
+    });
+  }
+}
