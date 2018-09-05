@@ -1,5 +1,21 @@
 export const directiveSelector = "ngCustomElement";
 
+interface PropsMapping {
+  [key: string]: any;
+}
+
+interface EventsMapping {
+  [key: string]: EventListenerOrEventListenerObject;
+}
+
+interface $Watch {
+  <T>(
+    watcherFn: () => T,
+    cb: (newVal: T, oldVal: T) => any,
+    isDeep: boolean
+  ): void;
+}
+
 export const directiveFactory = [
   function directiveFactory() {
     return {
@@ -8,7 +24,10 @@ export const directiveFactory = [
         props: "=",
         events: "="
       },
-      link: ($scope: any, $element: any) => {
+      link: (
+        $scope: { props: PropsMapping; events: EventsMapping; $watch: $Watch },
+        $element: any
+      ) => {
         /**
          * Apply the initial values for `props` and `events`
          */
@@ -18,11 +37,23 @@ export const directiveFactory = [
         /**
          * Watch for changes to the `props` mapping
          */
-        $scope.$watch(
+        $scope.$watch<PropsMapping>(
           () => $scope.props,
-          () => {
-            console.log("prop watch", $scope.props);
-            applyProps(customElement, $scope.props);
+          newVal => {
+            console.log("props watch", newVal);
+            applyProps(customElement, newVal);
+          },
+          true
+        );
+        /**
+         * Watch for changes to the `events` mapping
+         */
+        $scope.$watch<EventsMapping>(
+          () => $scope.events,
+          (newVal, oldVal) => {
+            console.log("events watch", newVal);
+            removeEventListeners(customElement, oldVal);
+            addEventListeners(customElement, newVal);
           },
           true
         );
@@ -38,7 +69,7 @@ export const directiveFactory = [
   }
 ];
 
-function applyProps(el: HTMLElement, props: { [key: string]: any }) {
+function applyProps(el: HTMLElement, props: PropsMapping) {
   if (props) {
     Object.keys(props).forEach(propName => {
       (el as any)[propName] = props[propName];
@@ -46,10 +77,7 @@ function applyProps(el: HTMLElement, props: { [key: string]: any }) {
   }
 }
 
-function addEventListeners(
-  el: HTMLElement,
-  events: { [key: string]: EventListenerOrEventListenerObject }
-) {
+function addEventListeners(el: HTMLElement, events: EventsMapping) {
   if (events) {
     Object.keys(events).forEach(eventName => {
       el.addEventListener(eventName, events[eventName]);
@@ -57,10 +85,7 @@ function addEventListeners(
   }
 }
 
-function removeEventListeners(
-  el: HTMLElement,
-  events: { [key: string]: EventListenerOrEventListenerObject }
-) {
+function removeEventListeners(el: HTMLElement, events: EventsMapping) {
   if (events) {
     Object.keys(events).forEach(eventName => {
       el.removeEventListener(eventName, events[eventName]);
