@@ -1,94 +1,85 @@
+import {
+  ExceptionHandlerService,
+  SimplifiedAttributes,
+  SimplifiedCompiledExpression,
+  SimplifiedJQLite,
+  SimplifiedParseService,
+  SimplifiedRootScopeService,
+  SimplifiedScope
+} from "./types";
+import { pascalToCamelCase, pascalToKebabCase } from "./utils";
+
 export const directiveSelector = "ngCustomElement";
 
-interface PropsMapping {
-  [key: string]: any;
-}
-
-interface EventsMapping {
-  [key: string]: EventListenerOrEventListenerObject;
-}
-
-interface $Watch {
-  <T>(
-    watcherFn: () => T,
-    cb: (newVal: T, oldVal: T) => any,
-    isDeep: boolean
-  ): void;
-}
-
 export const directiveFactory = [
-  function directiveFactory() {
+  "$exceptionHandler",
+  "$parse",
+  "$rootScope",
+  function directiveFactory(
+    $exceptionHandler: ExceptionHandlerService,
+    $parse: SimplifiedParseService,
+    $rootScope: SimplifiedRootScopeService
+  ) {
+    function safelyCall(fn: Function) {
+      try {
+        fn();
+      } catch (error) {
+        $exceptionHandler(error);
+      }
+    }
+
     return {
       restrict: "A",
-      scope: {
-        props: "=",
-        events: "="
-      },
-      link: (
-        $scope: { props: PropsMapping; events: EventsMapping; $watch: $Watch },
-        $element: any
-      ) => {
-        /**
-         * Apply the initial values for `props` and `events`
-         */
-        const customElement = $element[0];
-        applyProps(customElement, $scope.props);
-        addEventListeners(customElement, $scope.events);
-        /**
-         * Watch for changes to the `props` mapping
-         */
-        $scope.$watch<PropsMapping>(
-          () => $scope.props,
-          newVal => {
-            console.log("props watch", newVal);
-            applyProps(customElement, newVal);
+      priority: 100,
+      compile: (_: unknown, cAttrs: SimplifiedAttributes) => {
+        // Extract props.
+        const propExprPairs = Object.keys(cAttrs)
+          .filter(attr => attr.startsWith("ngceProp"))
+          .map(
+            (attr): [string, SimplifiedCompiledExpression] => [
+              pascalToCamelCase(attr.slice("ngceProp".length)),
+              $parse(cAttrs[attr])
+            ]
+          );
+
+        // Extract events.
+        const eventExprPairs = Object.keys(cAttrs)
+          .filter(attr => attr.startsWith("ngceOn"))
+          .map(
+            (attr): [string, SimplifiedCompiledExpression] => [
+              pascalToKebabCase(attr.slice("ngceOn".length)),
+              $parse(cAttrs[attr])
+            ]
+          );
+
+        return {
+          pre: (scope: SimplifiedScope, elem: SimplifiedJQLite) => {
+            // Set up property bindings.
+            const unwatchFns = propExprPairs.map(([propName, parsedExpr]) => {
+              const setProp = (newValue: any) => elem.prop(propName, newValue);
+
+              setProp(parsedExpr(scope));
+              return scope.$watch(parsedExpr, setProp);
+            });
+
+            elem.on("$destroy", () => unwatchFns.forEach(safelyCall));
           },
-          true
-        );
-        /**
-         * Watch for changes to the `events` mapping
-         */
-        $scope.$watch<EventsMapping>(
-          () => $scope.events,
-          (newVal, oldVal) => {
-            console.log("events watch", newVal);
-            removeEventListeners(customElement, oldVal);
-            addEventListeners(customElement, newVal);
-          },
-          true
-        );
-        /**
-         * Clean up the event listeners when the element is destroyed
-         */
-        $element.on("$destroy", function() {
-          console.log("destroy");
-          removeEventListeners(customElement, $scope.events);
-        });
+          post: (scope: SimplifiedScope, elem: SimplifiedJQLite) => {
+            // Set up event bindings.
+            eventExprPairs.forEach(([eventName, parsedExpr]) => {
+              elem.on(eventName, evt => {
+                var callback = parsedExpr.bind(null, scope, { $event: evt });
+
+                if (!$rootScope.$$phase) {
+                  scope.$apply(callback);
+                } else {
+                  safelyCall(callback);
+                }
+              });
+            });
+          }
+        };
       }
     };
   }
 ];
-
-function applyProps(el: HTMLElement, props: PropsMapping) {
-  if (props) {
-    Object.keys(props).forEach(propName => {
-      (el as any)[propName] = props[propName];
-    });
-  }
-}
-
-function addEventListeners(el: HTMLElement, events: EventsMapping) {
-  if (events) {
-    Object.keys(events).forEach(eventName => {
-      el.addEventListener(eventName, events[eventName]);
-    });
-  }
-}
-
-function removeEventListeners(el: HTMLElement, events: EventsMapping) {
-  if (events) {
-    Object.keys(events).forEach(eventName => {
-      el.removeEventListener(eventName, events[eventName]);
-    });
-  }
-}
