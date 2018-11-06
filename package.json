@@ -1,6 +1,6 @@
 {
   "name": "ng-custom-element",
-  "version": "1.0.3",
+  "version": "2.0.0",
   "repository": "git@github.com:JamesHenry/ng-custom-element.git",
   "author": "James Henry <james@henry.sc>",
   "contributors": [
@@ -12,6 +12,7 @@
   "license": "MIT",
   "files": [
     "dist",
+    "LICENSE",
     "README.md"
   ],
   "scripts": {
