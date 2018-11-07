@@ -33,7 +33,7 @@ angular.module('app', ['']).controller('ExampleController', function() {
 ```
 
 ```html
-<my-element ng-prop-myProp="$ctrl.controllerProp" ng-on-click="$ctrl.onClick($event)"></my-element>
+<my-element ng-prop-my_prop="$ctrl.controllerProp" ng-on-click="$ctrl.onClick($event)"></my-element>
 ```
 
 ## ng-prop-\* and ng-on-\* are awesome, but not backwards compatible
@@ -47,13 +47,13 @@ Assuming the exact controller code from above, let's compare the HTML from the A
 **AngularJS 1.7.3+**
 
 ```html
-<my-element ng-prop-myProp="$ctrl.controllerProp" ng-on-click="$ctrl.onClick($event)"></my-element>
+<my-element ng-prop-my_prop="$ctrl.controllerProp" ng-on-click="$ctrl.onClick($event)"></my-element>
 ```
 
 **ng-custom-element (AngularJS 1.3+)**
 
 ```html
-<my-element ng-custom-element ngce-prop-myProp="$ctrl.controllerProp" ngce-on-click="$ctrl.onClick($event)"></my-element>
+<my-element ng-custom-element ngce-prop-my_prop="$ctrl.controllerProp" ngce-on-click="$ctrl.onClick($event)"></my-element>
 ```
 
 Pretty sweet!
@@ -72,14 +72,30 @@ angular.module('yourAwesomeApp', ['ngCustomElement']);
 <my-element ng-custom-element></my-element>
 ```
 
-3. Use `ngce-prop-*` to bind properties (**note:** they need to be written in `camelCase`) to the element:
+3. Use `ngce-prop-*` to bind properties (**see the notes on casing below**) to the element:
 
 ```html
-<my-element ng-custom-element ngce-prop-myProp="someAngularJSControllerProp"></my-element>
+<my-element ng-custom-element ngce-prop-my_prop="someAngularJSControllerProp"></my-element>
 ```
 
-4. Use `ngce-event-*` to bind events (**note:** they need to be written in `kebab-case`) to the element:
+4. Use `ngce-event-*` to bind events (**see the notes on casing below**) to the element:
 
 ```html
 <my-element ng-custom-element ngce-prop-click="someAngularJSControllerMethod($event)"></my-element>
+```
+
+## Notes on casing
+
+We need to pay special attention to casing.
+
+**From the ngProp docs**: https://docs.angularjs.org/api/ng/directive/ngProp
+
+```
+Since HTML attributes are case-insensitive, camelCase properties like innerHTML must be escaped. AngularJS uses the underscore (_) in front of a character to indicate that it is uppercase, so innerHTML must be written as ng-prop-inner_h_t_m_l="expression" (Note that this is just an example, and for binding HTML ngBindHtml should be used).
+```
+
+**From the ngOn docs**: https://docs.angularjs.org/api/ng/directive/ngOn
+
+```
+Since HTML attributes are case-insensitive, camelCase properties like myEvent must be escaped. AngularJS uses the underscore (_) in front of a character to indicate that it is uppercase, so myEvent must be written as ng-on-my_event="expression".
 ```

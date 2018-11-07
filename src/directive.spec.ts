@@ -26,6 +26,23 @@ describe('ngCustomElement directive', () => {
     node.remove();
   }));
 
+  it('should convert property bindings with underscores into camelCase properties on to the element', inject((
+    $compile: any,
+    $rootScope: any
+  ) => {
+    const $scope = $rootScope.$new();
+
+    const node = $compile(`
+      <p ng-custom-element ngce-prop-different_casing="somePropConfig.prop3">content</p>
+    `)($scope);
+
+    $scope.$apply(`somePropConfig = { prop3: "val3" }`);
+
+    expect(node[0].differentCasing).toEqual('val3');
+
+    node.remove();
+  }));
+
   it('should forward event bindings on to the element', inject((
     $compile: any,
     $rootScope: any

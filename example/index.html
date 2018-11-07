@@ -33,7 +33,8 @@
     <div ng-controller="ExampleController as example">
         <button ng-click="example.toggle()">Show/hide</button>
 
-        <p ng-custom-element ng-if="example.show" ngce-prop-prop1="example.prop1" ngce-prop-prop2="example.prop2"
+        <!-- This will set the properties `myProp` and `otherProp` (note the camelCase) on the underlying element -->
+        <p ng-custom-element ng-if="example.show" ngce-prop-my_prop="example.prop1" ngce-prop-other_prop="example.prop2"
             ngce-on-click="example.onClick($event)">hiii</p>
     </div>
 </body>
