@@ -1,14 +1,14 @@
-import "angular";
-import "angular-mocks";
-import "./index";
+import 'angular';
+import 'angular-mocks';
+import './index';
 
 declare const angular: any;
 declare const inject: any;
 
-describe("ngCustomElement directive", () => {
-  beforeEach(angular.mock.module("ngCustomElement"));
+describe('ngCustomElement directive', () => {
+  beforeEach(angular.mock.module('ngCustomElement'));
 
-  it("should forward property bindings on to the element", inject((
+  it('should forward property bindings on to the element', inject((
     $compile: any,
     $rootScope: any
   ) => {
@@ -20,13 +20,13 @@ describe("ngCustomElement directive", () => {
 
     $scope.$apply(`somePropConfig = { prop1: "val", prop2: "val2" }`);
 
-    expect(node[0].prop1).toEqual("val");
-    expect(node[0].prop2).toEqual("val2");
+    expect(node[0].prop1).toEqual('val');
+    expect(node[0].prop2).toEqual('val2');
 
     node.remove();
   }));
 
-  it("should forward event bindings on to the element", inject((
+  it('should forward event bindings on to the element', inject((
     $compile: any,
     $rootScope: any
   ) => {
