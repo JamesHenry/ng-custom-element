@@ -72,13 +72,13 @@ angular.module('yourAwesomeApp', ['ngCustomElement']);
 <my-element ng-custom-element></my-element>
 ```
 
-3. Use `ngce-prop-\*` to bind properties (**note:** they need to be written in `camelCase`) to the element:
+3. Use `ngce-prop-*` to bind properties (**note:** they need to be written in `camelCase`) to the element:
 
 ```html
 <my-element ng-custom-element ngce-prop-myProp="someAngularJSControllerProp"></my-element>
 ```
 
-4. Use `ngce-event-\*` to bind events (**note:** they need to be written in `kebab-case`) to the element:
+4. Use `ngce-event-*` to bind events (**note:** they need to be written in `kebab-case`) to the element:
 
 ```html
 <my-element ng-custom-element ngce-prop-click="someAngularJSControllerMethod($event)"></my-element>
