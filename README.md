@@ -38,7 +38,7 @@ angular.module('app', ['']).controller('ExampleController', function() {
 
 ## ng-prop-\* and ng-on-\* are awesome, but not backwards compatible
 
-The changes introduced to facilitate the helpers for ng-prop-\* and ng-on-\* are not backwards compatible. This library therefore exposes a custom directive called `ng-custom-element` which allows you emulate how it works!
+The changes introduced to facilitate the helpers for ng-prop-\* and ng-on-\* are not backwards compatible. This library therefore exposes a custom directive called `ng-custom-element` which allows you to emulate how it works!
 
 It has been tested in AngularJS versions as far back as 1.3, but it may even work in versions older than that.
 
