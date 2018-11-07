@@ -6,15 +6,15 @@ import {
   SimplifiedParseService,
   SimplifiedRootScopeService,
   SimplifiedScope
-} from "./types";
-import { pascalToCamelCase, pascalToKebabCase } from "./utils";
+} from './types';
+import { pascalToCamelCase, pascalToKebabCase } from './utils';
 
-export const directiveSelector = "ngCustomElement";
+export const directiveSelector = 'ngCustomElement';
 
 export const directiveFactory = [
-  "$exceptionHandler",
-  "$parse",
-  "$rootScope",
+  '$exceptionHandler',
+  '$parse',
+  '$rootScope',
   function directiveFactory(
     $exceptionHandler: ExceptionHandlerService,
     $parse: SimplifiedParseService,
@@ -29,25 +29,25 @@ export const directiveFactory = [
     }
 
     return {
-      restrict: "A",
+      restrict: 'A',
       priority: 100,
       compile: (_: unknown, cAttrs: SimplifiedAttributes) => {
         // Extract props.
         const propExprPairs = Object.keys(cAttrs)
-          .filter(attr => attr.startsWith("ngceProp"))
+          .filter(attr => attr.startsWith('ngceProp'))
           .map(
             (attr): [string, SimplifiedCompiledExpression] => [
-              pascalToCamelCase(attr.slice("ngceProp".length)),
+              pascalToCamelCase(attr.slice('ngceProp'.length)),
               $parse(cAttrs[attr])
             ]
           );
 
         // Extract events.
         const eventExprPairs = Object.keys(cAttrs)
-          .filter(attr => attr.startsWith("ngceOn"))
+          .filter(attr => attr.startsWith('ngceOn'))
           .map(
             (attr): [string, SimplifiedCompiledExpression] => [
-              pascalToKebabCase(attr.slice("ngceOn".length)),
+              pascalToKebabCase(attr.slice('ngceOn'.length)),
               $parse(cAttrs[attr])
             ]
           );
@@ -62,7 +62,7 @@ export const directiveFactory = [
               return scope.$watch(parsedExpr, setProp);
             });
 
-            elem.on("$destroy", () => unwatchFns.forEach(safelyCall));
+            elem.on('$destroy', () => unwatchFns.forEach(safelyCall));
           },
           post: (scope: SimplifiedScope, elem: SimplifiedJQLite) => {
             // Set up event bindings.
