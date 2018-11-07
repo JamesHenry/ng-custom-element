@@ -7,7 +7,7 @@ import {
   SimplifiedRootScopeService,
   SimplifiedScope
 } from './types';
-import { pascalToCamelCase, pascalToKebabCase } from './utils';
+import { pascalToCamelCase, getNormalizedPropOrEventName } from './utils';
 
 export const directiveSelector = 'ngCustomElement';
 
@@ -47,7 +47,7 @@ export const directiveFactory = [
           .filter(attr => attr.startsWith('ngceOn'))
           .map(
             (attr): [string, SimplifiedCompiledExpression] => [
-              pascalToKebabCase(attr.slice('ngceOn'.length)),
+              getNormalizedPropOrEventName(cAttrs.$attr[attr]),
               $parse(cAttrs[attr])
             ]
           );

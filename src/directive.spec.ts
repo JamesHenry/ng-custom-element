@@ -277,5 +277,45 @@ describe('ngCustomElement directive', () => {
         expect(attrs.$attr.ngceOnTitle).toBe('ngce-on-title');
       });
     });
+
+    it('should correctly bind to kebab-cased events', inject((
+      $compile: any,
+      $rootScope: any
+    ) => {
+      var element = $compile(
+        '<span ng-custom-element ngce-on-foo-bar="cb()"></span>'
+      )($rootScope);
+      var cb = ($rootScope.cb = jasmine.createSpy('ngce-on cb'));
+      $rootScope.$digest();
+
+      element.triggerHandler('foobar');
+      element.triggerHandler('fooBar');
+      element.triggerHandler('foo_bar');
+      element.triggerHandler('foo:bar');
+      expect(cb).not.toHaveBeenCalled();
+
+      element.triggerHandler('foo-bar');
+      expect(cb).toHaveBeenCalled();
+    }));
+
+    it('should correctly bind to camelCased events', inject((
+      $compile: any,
+      $rootScope: any
+    ) => {
+      var element = $compile(
+        '<span ng-custom-element ngce-on-foo_bar="cb()"></span>'
+      )($rootScope);
+      var cb = ($rootScope.cb = jasmine.createSpy('ngce-on cb'));
+      $rootScope.$digest();
+
+      element.triggerHandler('foobar');
+      element.triggerHandler('foo-bar');
+      element.triggerHandler('foo_bar');
+      element.triggerHandler('foo:bar');
+      expect(cb).not.toHaveBeenCalled();
+
+      element.triggerHandler('fooBar');
+      expect(cb).toHaveBeenCalled();
+    }));
   });
 });
