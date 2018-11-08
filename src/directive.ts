@@ -59,7 +59,9 @@ export const directiveFactory = [
             // Set up property bindings.
             const unwatchFns = propExprPairs.map(([propName, parsedExpr]) => {
               if (EVENT_HANDLER_ATTR_REGEXP.test(propName)) {
-                throw new Error('Property bindings for HTML DOM event properties are disallowed.');
+                throw new Error(
+                  'Property bindings for HTML DOM event properties are disallowed.'
+                );
               }
 
               const setProp = (newValue: any) => elem.prop(propName, newValue);
