@@ -7,7 +7,7 @@ import {
   SimplifiedRootScopeService,
   SimplifiedScope
 } from './types';
-import { pascalToCamelCase, pascalToKebabCase } from './utils';
+import { getNormalizedPropOrEventName } from './utils';
 
 export const directiveSelector = 'ngCustomElement';
 
@@ -20,6 +20,8 @@ export const directiveFactory = [
     $parse: SimplifiedParseService,
     $rootScope: SimplifiedRootScopeService
   ) {
+    const EVENT_HANDLER_ATTR_REGEXP = /^(on[a-z]+|formaction)$/;
+
     function safelyCall(fn: Function) {
       try {
         fn();
@@ -37,7 +39,7 @@ export const directiveFactory = [
           .filter(attr => attr.startsWith('ngceProp'))
           .map(
             (attr): [string, SimplifiedCompiledExpression] => [
-              pascalToCamelCase(attr.slice('ngceProp'.length)),
+              getNormalizedPropOrEventName(cAttrs.$attr[attr]),
               $parse(cAttrs[attr])
             ]
           );
@@ -47,7 +49,7 @@ export const directiveFactory = [
           .filter(attr => attr.startsWith('ngceOn'))
           .map(
             (attr): [string, SimplifiedCompiledExpression] => [
-              pascalToKebabCase(attr.slice('ngceOn'.length)),
+              getNormalizedPropOrEventName(cAttrs.$attr[attr]),
               $parse(cAttrs[attr])
             ]
           );
@@ -56,6 +58,12 @@ export const directiveFactory = [
           pre: (scope: SimplifiedScope, elem: SimplifiedJQLite) => {
             // Set up property bindings.
             const unwatchFns = propExprPairs.map(([propName, parsedExpr]) => {
+              if (EVENT_HANDLER_ATTR_REGEXP.test(propName)) {
+                throw new Error(
+                  'Property bindings for HTML DOM event properties are disallowed.'
+                );
+              }
+
               const setProp = (newValue: any) => elem.prop(propName, newValue);
 
               setProp(parsedExpr(scope));
