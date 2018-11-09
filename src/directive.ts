@@ -76,7 +76,8 @@ export const directiveFactory = [
             // Set up event bindings.
             eventExprPairs.forEach(([eventName, parsedExpr]) => {
               elem.on(eventName, evt => {
-                var callback = parsedExpr.bind(null, scope, { $event: evt });
+                evt = evt.originalEvent || evt;
+                const callback = parsedExpr.bind(null, scope, { $event: evt });
 
                 if (!$rootScope.$$phase) {
                   scope.$apply(callback);
