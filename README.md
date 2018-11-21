@@ -90,12 +90,8 @@ We need to pay special attention to casing.
 
 **From the ngProp docs**: https://docs.angularjs.org/api/ng/directive/ngProp
 
-```
-Since HTML attributes are case-insensitive, camelCase properties like innerHTML must be escaped. AngularJS uses the underscore (_) in front of a character to indicate that it is uppercase, so innerHTML must be written as ng-prop-inner_h_t_m_l="expression" (Note that this is just an example, and for binding HTML ngBindHtml should be used).
-```
+> Since HTML attributes are case-insensitive, camelCase properties like innerHTML must be escaped. AngularJS uses the underscore (_) in front of a character to indicate that it is uppercase, so innerHTML must be written as ng-prop-inner_h_t_m_l="expression" (Note that this is just an example, and for binding HTML ngBindHtml should be used).
 
 **From the ngOn docs**: https://docs.angularjs.org/api/ng/directive/ngOn
 
-```
-Since HTML attributes are case-insensitive, camelCase properties like myEvent must be escaped. AngularJS uses the underscore (_) in front of a character to indicate that it is uppercase, so myEvent must be written as ng-on-my_event="expression".
-```
+> Since HTML attributes are case-insensitive, camelCase properties like myEvent must be escaped. AngularJS uses the underscore (_) in front of a character to indicate that it is uppercase, so myEvent must be written as ng-on-my_event="expression".
