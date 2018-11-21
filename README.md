@@ -81,7 +81,7 @@ angular.module('yourAwesomeApp', ['ngCustomElement']);
 4. Use `ngce-event-*` to bind events (**see the notes on casing below**) to the element:
 
 ```html
-<my-element ng-custom-element ngce-event-click="someAngularJSControllerMethod($event)"></my-element>
+<my-element ng-custom-element ngce-on-click="someAngularJSControllerMethod($event)"></my-element>
 ```
 
 ## Notes on casing
