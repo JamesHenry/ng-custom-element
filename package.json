@@ -10,6 +10,7 @@
     }
   ],
   "license": "MIT",
+  "main": "dist/ng-custom-element.js",
   "files": [
     "dist",
     "LICENSE",
