@@ -39,7 +39,7 @@
     "lint-staged": "^8.0.4",
     "microbundle": "0.7.0",
     "prettier": "^1.14.2",
-    "semantic-release": "^15.10.8",
+    "semantic-release": "^17.2.3",
     "travis-deploy-once": "^5.0.9",
     "ts-jest": "^23.1.4",
     "typescript": "^3.1.6"
